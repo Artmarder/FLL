@@ -25,12 +25,10 @@ class Odometry:
 
         self.run = False
         
-
-    def calculate_distance(degrees_rotated):
         """
         calculate the distance. 
         """
-        return (degrees_rotated / 360) * WHEEL_CIRCUMFERENCE
+        calculate_distance = (degrees_rotated / 360) * WHEEL_CIRCUMFERENCE
 
 
     @micropython.native
@@ -70,10 +68,3 @@ class Odometry:
             
 
     def resetPostion(self, x: float = 0, y: float = 0, theata: float = 0)
-
-            def update_file_odometry_write():
-                """
-                hear we comeback all Parameters to file.
-                """
-                odometry_file = open("odometry.txt")
-                odometry_file.write("x="x,"y="y,"theta="theta)
