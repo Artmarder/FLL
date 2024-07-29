@@ -5,22 +5,24 @@ class PortError(Exception):
         self.port = port
 
 class Motor:
+
     """
     in this class we confrig the motor.
     """
     
     def __init__(self, config: object, **kwargs):
-
-        self._port = micropython.const(config.port)
-
-        if not self.connected():
-            raise PortError(self._port)
-
-
-        
-    def get_angel_postioin():
-    position = motor.position
+        self.motorA = LargeMotor('A')
+        self.motorB = LargeMotor('B')
+   
+    def get_angel_postioin_A():
+    position = self.motorA.position
     return position
+
+    def get_angel_postioin_B():
+        position = self.motorB.position
+        return position
+
+
 
     def getRot():
         Rot = position / 360
