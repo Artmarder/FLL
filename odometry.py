@@ -24,12 +24,6 @@ class Odometry:
         self.drivebase = drivebase
 
         self.run = False
-        
-        """
-        calculate the distance. 
-        """
-        calculate_distance = (degrees_rotated / 360) * WHEEL_CIRCUMFERENCE
-
 
     @micropython.native
     @thread
