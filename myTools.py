@@ -29,6 +29,11 @@ class Timer:
         self.Stime += _time() - Ptime
         self.Ptime = None
 
+= (degrees_rotated / 360) * WHEEL_CIRCUMFERENCE
+
+def calculate_distance():
+    realtive
+
 
 
 
