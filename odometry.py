@@ -68,3 +68,5 @@ class Odometry:
             
 
     def resetPostion(self, x: float = 0, y: float = 0, theata: float = 0)
+     
+    self.x,self.y,self.theata = x, y, theata
