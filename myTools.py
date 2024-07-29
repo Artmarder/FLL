@@ -1,5 +1,6 @@
 import micropython
 from _thread import start_new_thread
+from MyDivece import motor
 
 @micropython.native
 def thread(func):
