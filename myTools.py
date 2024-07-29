@@ -30,11 +30,10 @@ class Timer:
         self.Stime += _time() - Ptime
         self.Ptime = None
 
-= (degrees_rotated / 360) * WHEEL_CIRCUMFERENCE
-
-def calculate_distance():
-    realtive
-
+    def calcDistance():
+        correct_postionA = get_angel_postioin_A()
+        correct_postionB = get_angel_postioin_B()
+        calc_distance =correct_postionB  + correct_postionA  / 360 / 2 * 17.5
 
 
 
