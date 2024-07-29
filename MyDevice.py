@@ -15,27 +15,46 @@ class Motor:
         self.motorB = LargeMotor('B')
    
     def get_angel_postioin_A():
-    position = self.motorA.position
-    return position
+    positionA = self.motorA.position
+    return positionA
 
     def get_angel_postioin_B():
-        position = self.motorB.position
-        return position
+        positionB = self.motorB.position
+        return positionB
 
-
-
-    def getRot():
-        Rot = position / 360
+    def getRotA():
+        Rot = positionA / 360
+        return Rot
+        
+    def getRotB():
+        Rot = positionB / 360
         return Rot
 
-    def SpeedMotor():
-        speedMotor = motor.speed
-        return speedMotor
+    
 
-    def ResetPostion():
-        global position
-        position = 0
+    def SpeedMotorA():
+        speedMotorA = motor.speed
+        return speedMotorA
+        
+    def SpeedMotorB():
+        speedMotorB = motor.speed
+        return speedMotorB
+
+
+    def ResetPostionA():
+        global positionA
+        positionA = 0
         return position
+
+    def ResetPostionB():
+        global positionA
+        positionB = 0
+        return position
+
+    def calcDistance():
+        correct_postionA = get_angel_postioin_A()
+        correct_postionB = get_angel_postioin_B()
+        calc_distance =correct_postionB  + correct_postionA  / 360 / 2 * 17.5
 
 
 class Gyro :
