@@ -1,66 +1,101 @@
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
-from time import sleep
+from   
+ time import sleep
 from math import cos, sin, pi
-from _thread import LockType
 
 WHEEL_DIAMETER = 56
-WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * pi
+WHEEL_CIRCUMFERENCE = WHEEL_ DIAMETER * pi
 WHEEL_BASE = 120
+
 left_motor = Motor(Port.A)
 right_motor = Motor(Port.B)
 
 class Odometry:
     """
-    in this class we can watvh the odometry when robot drive.
+    This class implements odometry for an EV3 robot in FLL competitions.
     """
 
-    def __init__(self,drivebase = drivebase x: float = 0, y: float = 0, theata: float = 0):
+    def _init_(self, drivebase: DriveBase):
+        """
+        Initializes the odometry object.
 
-        self.x, self.y = x, y
-        self.theata = theata
+        Args:
+            drivebase: The DriveBase object representing the robot's motors.
+        """
+
+        self.x = 0.0  # Initial X position (mm)
+        self.y = 0.0  # Initial Y position (mm)
+        self.theta = 0.0  # Initial angle (radians)
 
         self.drivebase = drivebase
 
-        self.run = False
+        self.last_left_angle = 0  # Stores previous left motor angle for delta calculation
+        self.last_right_angle = 0  # Stores previous right motor angle for delta calculation
+        self.running = False  # Flag to control odometry loop
 
-    @micropython.native
-    @thread
-    def startOdometry(self):
+    def start_odometry(self):
         """
-        start the odomerty .
+        Starts the odometry loop. This method should be called
+        after robot movement commands to track the position.
         """
-        self.run = True
-        while self.run:
-            def update_position(left_motor, right_motor, x, y, theta):
 
-                left_degrees = left_motor.angle()
-                right_degrees = right_motor.angle() 
+        self.running = True
+        while self.running:
+            left_angle = left_motor.angle()
+            right_angle = right_motor.angle()
 
-                dL = calculate_distance(left_degrees)
-                dR = calculate_distance(right_degrees)
+            delta_left = (left_angle - self.last_left_angle) * 360 / (WHEEL_CIRCUMFERENCE * self.drivebase.gears.ratio)  # Convert to degrees and account for gear ratio
+            delta_right = (right_angle - self.last_right_angle) * 360 / (WHEEL_CIRCUMFERENCE * self.drivebase.gears.ratio)
 
-                dTheta = gyro.sensor()
-                d = (dR + dL) / 2
+            self.last_left_angle = left_angle
+            self.last_right_angle = right_angle
 
-                dx = d * cos((theta + dTheta) / 2)
-                dy = d * sin((theta + dTheta) / 2 ) 
+            # Average delta angles for more accurate heading calculation
+            delta_theta = (delta_left + delta_right) / 2
 
-                x += dx
-                y += dy
-                theta = dTheta
+            # Calculate distance traveled based on average delta angle
+            distance = (delta_left + delta_right) / 2 * WHEEL_CIRCUMFERENCE / self.drivebase.gears.ratio
 
-                lastTheta = theta
+            # Update position using trigonometry and considering robot orientation
+            dx = distance * cos((self.theta + delta_theta) / 2)
+            dy = distance * sin((self.theta + delta_theta) / 2)
 
-    @micropython.native    
-    def stop(self) :
+            self.x += dx
+            self.y += dy
+            self.theta += delta_theta
+
+            sleep(0.01)  # Short delay for smoother updates
+
+    def stop_odometry(self):
         """
-        stop the odomerty. 
+        Stops the odometry loop.
         """
-        self.run = False
-            
 
-    def resetPostion(self, x: float = 0, y: float = 0, theata: float = 0)
+        self.running = False
+
+    def reset_position(self, x=0.0, y=0.0, theta=0.0):
+        """
+        Resets the robot's estimated position and orientation.
+
+        Args:
+            x: New X position (mm).
+            y: New Y position (mm).
+            theta: New angle (radians).
+        """
+
+        self.x = x
+        self.y = y
+        self.theta = theta
+
+        # Reset motor angle tracking for accurate deltas
+        self.last_left_angle = left_motor.angle()
+        self.last_right_angle = right_motor.angle()
      
     self.x,self.y,self.theata = x, y, theata
+
+
+"""
+BLUE PHOENIX CODE 
+"""
