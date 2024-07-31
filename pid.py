@@ -1,65 +1,61 @@
 import micropython as micro
-from time import time
-from MyDevice import *
-from myTools import *
-from odometry import *
+from time import ticks_diff, ticks_ms
+from MyDevice import *  # Assuming this imports motor control functions
+from myTools import GetAngle, calculate_distance  # Assuming these functions exist
 
 class PIDController:
-    def init(self, kp, ki, kd, target):
+    def __init__(self, kp, ki, kd, target):
         self.kp = kp
         self.ki = ki
         self.kd = kd
         self.integral = 0
-        self.lastError = 0
-        self.lastTime = time()
+        self.last_error = 0
+        self.last_time = ticks_ms()
         self.target = target
-    
+
     @micro.native
     def correction(self, current_angle):
-        current_time = time()
+        current_time = ticks_ms()
+        delta_time = ticks_diff(current_time, self.last_time)
+        if delta_time == 0:
+            delta_time = 1  # Minimum time to avoid division by zero
+
         error = self.target - current_angle
-        deltaTime = current_time - self.lastTime
-        if deltaTime == 0:
-            deltaTime += 0.001
-        
+        error = (error + 360) % 360  # Wrap error to -180 to 180 range
+
         proportional = error
-        self.integral += (error + self.lastError) / 2 * deltaTime
-        differential = (error - self.lastError) / deltaTime if deltaTime != 0 else 0
-        
-        output.correction = self.kp * proportional + self.ki * self.integral + self.kd * differential
-        
-        self.lastError = error
-        self.lastTime = current_time
-        
-        return pid_a
+        self.integral += (error + self.last_error) * 0.5 * delta_time
+        differential = (error - self.last_error) / delta_time if delta_time != 0 else 0
 
-    def drive(self, speed, wantedDistance):
-        current_distance = calculate_distance()
+        output = self.kp * proportional + self.ki * self.integral + self.kd * differential
+        self.last_error = error
+        self.last_time = current_time
 
-        while current_distance < wantedDistance:
+        return output
+
+    def drive(self, speed, target_distance):
+        initial_time = ticks_ms()
+        initial_distance = calculate_distance()
+
+        while calculate_distance() - initial_distance < target_distance:
             current_angle = GetAngle()
             correction = self.correction(current_angle)
-            error = self.target - current_angle
-            if error < -180:
-                error += 360
             run_tank(speed + correction, speed - correction)
-            current_distance = calculate_distance()
 
+        # Stop motors after reaching target distance
         motor.stop()
 
-    def turn(self, target, speed):
-        pid = PIDController(self.kp, self.ki, self.kd, target)
-
+    def turn(self, target_angle, speed):
         while True:
             current_angle = GetAngle()
-            error = target - current_angle
+            error = target_angle - current_angle
+            error = (error + 360) % 360  # Wrap error to -180 to 180 range
+
             if abs(error) < 1:
                 break
 
-            if error < -180:
-                error += 360
-
-            correction = pid.correction(current_angle)
+            correction = self.correction(current_angle)
             run_tank(correction, -correction)
-        
+
+        # Stop motors after reaching target angle
         motor.stop()
