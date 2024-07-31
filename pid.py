@@ -48,7 +48,7 @@ class PIDController:
         while True:
             current_angle = GetAngle()
             error = target_angle - current_angle
-            error = (error + 360) % 360  # Wrap error to -180 to 180 range
+            error = (error + 360) % 360 
 
             if abs(error) < 1:
                 break
@@ -56,5 +56,5 @@ class PIDController:
             correction = self.correction(current_angle)
             run_tank(correction, -correction)
 
-        # Stop motors after reaching target angle
+
         motor.stop()
