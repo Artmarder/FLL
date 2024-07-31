@@ -1,39 +1,35 @@
 import micropython
 from _thread import start_new_thread
-from MyDivece import motor
+from MyDivece import motor  # Assuming this is the correct import
 
-@micropython.native
-def thread(func):
-    def wrapper(*args, **kwargs):
-        start_new_thread(func, args, kwargs)
-    return wrapper
+def calc_distance(angle_a, angle_b):
+    """Calculates distance based on given angles."""
+    distance = angle_b + angle_a / 360 / 2 * 17.5
+    return distance
 
 class Timer:
     def __init__(self):
-        self.Stime = _time()
-        self.Ptime = _time()
+        self.start_time = _time()
+        self.pause_time = None
 
-    @micropython.native
-    def get(self):
-        return _time() - self.Stime
+    def get_elapsed_time(self):
+        """Returns elapsed time in seconds."""
+        if self.pause_time is None:
+            return _time() - self.start_time
+        else:
+            return self.pause_time - self.start_time
 
-    @micropython.native
     def reset(self):
-        self.Stime = _time()
+        self.start_time = _time()
+        self.pause_time = None
 
-    @micropython.native
     def pause(self):
-        self.Ptime = _time()
-        
-    @micropython.native
-    def play(self):
-        self.Stime += _time() - Ptime
-        self.Ptime = None
+        self.pause_time = _time()
 
-    def calcDistance():
-        correct_postionA = get_angel_postioin_A()
-        correct_postionB = get_angel_postioin_B()
-        calc_distance =correct_postionB  + correct_postionA  / 360 / 2 * 17.5
-
+    def resume(self):
+        if self.pause_time is not None:
+            elapsed = _time() - self.pause_time
+            self.start_time += elapsed
+            self.pause_time = None
 
 
