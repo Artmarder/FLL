@@ -1,5 +1,4 @@
 import micropython
-
 from pybricks.ev3devices import Motor, GyroSensor
 
 class Motor:
@@ -81,7 +80,6 @@ class Gyro:
             float: The angular speed in degrees per second.
         """
         return self.gyro.rate()
-
     def reset(self):
         """
         Resets the gyro sensor's angle to zero.
