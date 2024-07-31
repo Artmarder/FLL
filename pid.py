@@ -1,7 +1,7 @@
 import micropython as micro
 from time import ticks_diff, ticks_ms
-from MyDevice import *  # Assuming this imports motor control functions
-from myTools import GetAngle, calculate_distance  # Assuming these functions exist
+from MyDevice import *  
+from myTools import GetAngle, calculate_distance  
 
 class PIDController:
     def __init__(self, kp, ki, kd, target):
@@ -18,10 +18,10 @@ class PIDController:
         current_time = ticks_ms()
         delta_time = ticks_diff(current_time, self.last_time)
         if delta_time == 0:
-            delta_time = 1  # Minimum time to avoid division by zero
+            delta_time = 1 
 
         error = self.target - current_angle
-        error = (error + 360) % 360  # Wrap error to -180 to 180 range
+        error = (error + 360) % 360  
 
         proportional = error
         self.integral += (error + self.last_error) * 0.5 * delta_time
@@ -42,7 +42,6 @@ class PIDController:
             correction = self.correction(current_angle)
             run_tank(speed + correction, speed - correction)
 
-        # Stop motors after reaching target distance
         motor.stop()
 
     def turn(self, target_angle, speed):
