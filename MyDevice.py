@@ -1,87 +1,72 @@
 import micropython
-from pybricks.ev3devices import Motor, GyroSensor
+
+class PortError(Exception):
+    def __init__(self, port):
+        self.port = port
 
 class Motor:
+
     """
-    Represents a motor connected to the EV3.
+    in this class we confrig the motor.
     """
+    
+    def __init__(self, config: object, **kwargs):
+        self.motorA = LargeMotor('A')
+        self.motorB = LargeMotor('B')
+   
+    def get_angel_postioin_A():
+    positionA = self.motorA.position
+    return positionA
 
-    def __init__(self, port):
-        """
-        Initializes a motor object.
+    def get_angel_postioin_B():
+        positionB = self.motorB.position
+        return positionB
 
-        Args:
-            port (str): The port where the motor is connected (e.g., 'A', 'B').
-        """
-        self.motor = Motor(port)
-        self.position = 0
+    def getRotA():
+        Rot = positionA / 360
+        return Rot
+        
+    def getRotB():
+        Rot = positionB / 360
+        return Rot
 
-    def get_angle_position(self):
-        """
-        Returns the current angle position of the motor.
+    
 
-        Returns:
-            int: The angle position in degrees.
-        """
-        return self.motor.angle()
+    def SpeedMotorA():
+        speedMotorA = self.motor.speed
+        return speedMotorA
+        
+    def SpeedMotorB():
+        speedMotorB = self.motor.speed
+        return speedMotorB
 
-    def get_rotations(self):
-        """
-        Returns the number of rotations completed by the motor.
 
-        Returns:
-            float: The number of rotations.
-        """
-        return self.motor.angle() / 360
+    def ResetPostionA():
+        global positionA
+        positionA = 0
+        return position
 
-    def get_speed(self):
-        """
-        Returns the current speed of the motor.
+    def ResetPostionB():
+        global positionA
+        positionB = 0
+        return position
 
-        Returns:
-            int: The motor speed in degrees per second.
-        """
-        return self.motor.speed()
+    def calcDistance():
+        correct_postionA = get_angel_postioin_A()
+        correct_postionB = get_angel_postioin_B()
+        calc_distance =correct_postionB  + correct_postionA  / 360 / 2 * 17.5
 
-    def reset_position(self):
-        """
-        Resets the motor's position to zero.
-        """
-        self.motor.reset_angle(0)
 
-class Gyro:
-    """
-    Represents a gyro sensor connected to the EV3.
-    """
+class Gyro :
 
-    def __init__(self, port):
-        """
-        Initializes a gyro sensor object.
+    def GetAngel():
+        getAngel =  gyro_sensor.angle
+        return getAngel
 
-        Args:
-            port (str): The port where the gyro sensor is connected (e.g., 'S1', 'S2').
-        """
-        self.gyro = GyroSensor(port)
-
-    def get_angle(self):
-        """
-        Returns the current angle measured by the gyro.
-
-        Returns:
-            float: The angle in degrees.
-        """
-        return self.gyro.angle()
-
-    def get_speed(self):
-        """
-        Returns the current angular speed measured by the gyro.
-
-        Returns:
-            float: The angular speed in degrees per second.
-        """
-        return self.gyro.rate()
-    def reset(self):
-        """
-        Resets the gyro sensor's angle to zero.
-        """
-        self.gyro.reset_angle(0)
+    def GetSpeed():
+        GyroSpeed = gyro_sensor.rate
+        return GyroSpeed
+    
+    def ResetGyro():
+        Reset = reset_angle()
+        return Reset
