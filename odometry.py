@@ -1,8 +1,7 @@
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
-from   
- time import sleep
+from time import sleep
 from math import cos, sin, pi
 
 WHEEL_DIAMETER = 56
