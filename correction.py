@@ -64,7 +64,7 @@ class DriveBasic():
         # and tidy up the code, it will also help to tidy up odometry.py 
         initial_distance = calculate_distance()
 
-        while (calculate_distance() - initial_distance) < target_distance:
+        while (initial_distance-target_distance) < target_distance:
             current_angle = GetAngle()
             
             # once again, if the target is 0 and angle is 270, it would turn 270 degrees instead of -90
@@ -93,8 +93,8 @@ class DriveBasic():
             # once again, if the target is 0 and angle is 270, it would turn 270 degrees instead of -90
             error = target_angle - current_angle
             # error %= 360 does the same thing but faster
-            error = (error + 360) % 360 
-
+            error %= 360
+            
             #put this in the while loop
             if abs(error) < 1:
                 break
