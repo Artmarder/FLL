@@ -69,7 +69,9 @@ class DriveBasic():
             # bad
             # fix
 
-            if 
+            if error < -180:
+            error += 360
+            
             correction = self.correction(current_angle)
             run_tank(speed + correction, speed - correction)
 
@@ -77,7 +79,7 @@ class DriveBasic():
 
     def turn(self, target_angle, speed):
         # you need to pass params to PIDController()
-        PID = PIDController()
+        PID = PIDController(2,0.005,0.5)# -> random
         while True:
 
             current_angle = GetAngle()
@@ -97,7 +99,7 @@ class DriveBasic():
     
             correction = self.correction(current_angle)
             # add speed
-            run_tank(correction, -correction)
+            run_tank(speed+correction, speed-correction)
     
     
         motor.stop()
