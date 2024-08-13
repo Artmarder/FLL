@@ -58,6 +58,8 @@ class DriveBasic():
 
         # you need to pass params to PIDController()
         PID = PIDController()
+        # need to pass params to calculate_distance(), create Drivebase class to make this easy 
+        # and tidy up the code, it will also help to tidy up odometry.py 
         initial_distance = calculate_distance()
 
         while (calculate_distance() - initial_distance) < target_distance:
