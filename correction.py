@@ -33,11 +33,11 @@ class PIDController():
 
         # shorter var names: proportional -> p, differential -> d
         # no need for this line, put error directly in the output
-        proportional = error
+        P = error
         self.integral += (error + self.last_error) * 0.5 * delta_time
-        differential = (error - self.last_error) / delta_time
+        D = (error - self.last_error) / delta_time
 
-        output = self.kp * proportional + self.ki * self.integral + self.kd * differential
+        output = self.kp * P + self.ki * self.integral + self.kd * D
 
         self.last_error = error
         self.last_time = current_time
@@ -57,7 +57,7 @@ class DriveBasic():
     def drive(target_distance, speed):
 
         # you need to pass params to PIDController()
-        PID = PIDController()
+        PID = PIDController(2,0.005,0.5)# -> random 
         # need to pass params to calculate_distance(), create Drivebase class to make this easy 
         # and tidy up the code, it will also help to tidy up odometry.py 
         initial_distance = calculate_distance()
@@ -68,6 +68,8 @@ class DriveBasic():
             # once again, if the target is 0 and angle is 270, it would turn 270 degrees instead of -90
             # bad
             # fix
+
+            if 
             correction = self.correction(current_angle)
             run_tank(speed + correction, speed - correction)
 
