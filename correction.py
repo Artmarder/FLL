@@ -25,17 +25,19 @@ class PIDController():
         # convert to seconds(important)
         delta_time = ticks_diff(current_time, self.last_time)
         if delta_time == 0:
-            delta_time = 1 
+            delta_time += 0.0000000000000000000001 
 
         error = self.target - current_angle
         # error %= 360 does the same thing but faster
-        error = (error + 360) % 360  
+        error %= 360  
 
         # shorter var names: proportional -> p, differential -> d
         # no need for this line, put error directly in the output
         P = error
         self.integral += (error + self.last_error) * 0.5 * delta_time
         D = (error - self.last_error) / delta_time
+
+        #I = we do this to show the judges how PID works in our code
 
         output = self.kp * P + self.ki * self.integral + self.kd * D
 
@@ -44,8 +46,8 @@ class PIDController():
 
         return output
 
-# Basic
-# would put in its own file, or in the drivebase file (you need to create it in the futre)
+# Basic = ?
+# would put in its own file, or in the drivebase file (you need to create it in the futre) 
 class DriveBasic():
     # i would create the pid inside the function, i dont think you know what it means to declare a varible in this space
     def __init__(self, distance, speed):        
