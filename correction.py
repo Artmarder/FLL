@@ -1,45 +1,68 @@
-import micropython as micro
-from time import time as time
-from MyDevice import all
-from myTools.py import all
-from odomerty import all
+from time import ticks_diff, ticks_ms
+from MyDevice import *  
+from myTools import GetAngle, calculate_distance  
 
 class PIDController():
-    def __init__(self, kp, ki, kd, error, feedback, target) -> float:
+    def _init_(self, kp, ki, kd, target):
         self.kp = kp
         self.ki = ki
         self.kd = kd
-        self.error = error
-        self.feedback = feedback
-        self.lastError = lastError = 0
-        self.lastTime = time()
+        self.integral = 0
+        self.last_error = 0
+        self.last_time = ticks_ms()
         self.target = target
-    
-    
-    @micro.native
-    def correction():
 
-        error = target - GetAngel
+    def correction(self, current_angle):
+        current_time = ticks_ms()
+        delta_time = ticks_diff(current_time, self.last_time)
+        if delta_time == 0:
+            delta_time = 1 
 
-        
-        deltaTime = time - lastTime
-        
+        error = self.target - current_angle
+        error = (error + 360) % 360  
+
         proportional = error
-        integral += (error + lastError) / 2 * deltaTime
-        differential = (error - lastError) / deltaTime
+        self.integral += (error + self.last_error) * 0.5 * delta_time
+        differential = (error - self.last_error) / delta_time
 
-        return kp * proportional + ki * integral + kd * differential
+        output = self.kp * proportional + self.ki * self.integral + self.kd * differential
+        self.last_error = error
+        self.last_time = current_time
+
+        return output
+
+    class DriveBassick():
+        PID = PIDController()
+        def __init__(self, distance, speed):
+            self.distance = distance
+            self.speed  = speed 
+            
+            setpoint = current_angle
+            
+            initial_time = ticks_ms()
+            initial_distance = calculate_distance()
+
+            def drive(istance, speed ) :
+                while (calculate_distance() - initial_distance) < target_distance:
+                current_angle = GetAngle()
+                
+                correction = self.correction(current_angle)
+                run_tank(speed + correction, speed - correction)
+            
+    
+        motor.stop()
+
+    def turn(self, target_angle, speed):
+        while True:
+            current_angle = GetAngle()
+            error = target_angle - current_angle
+            error = (error + 360) % 360 
+
+            if abs(error) < 1:
+                break
+
+            correction = self.correction(current_angle)
+            run_tank(correction, -correction)
 
 
-    def drive(speed, wantedDistance) -> float:
-        correction = correction()
-        Distance = calculate_distance()
-
-        while Distance > wantedDistance:
-            if speed > 0:
-                error = target - GetAngel
-                if error < -180:
-                error += 360
-                run_tank(speed+correction, speed - correction)
-
-        motor.stop
+        motor.stop()
