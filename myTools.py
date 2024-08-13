@@ -4,7 +4,7 @@ from MyDivece import motor  # Assuming this is the correct import
 
 def calc_distance(angle_a, angle_b):
     """Calculates distance based on given angles."""
-    distance = angle_b + angle_a / 360 / 2 * 17.5
+    distance = (angle_b + angle_a) / 720 * 17.5
     return distance
 
 class Timer:
