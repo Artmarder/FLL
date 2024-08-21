@@ -13,7 +13,6 @@ def record_movements():
         left_angle = motor_left.angle()
         right_angle = motor_right.angle()
         movements.append((left_angle, right_angle))
-        wait(100)
     ev3.screen.clear()
     ev3.screen.print("Recording stopped")
 
@@ -22,7 +21,6 @@ def replay_movements():
     for left_angle, right_angle in movements:
         motor_left.run_target(100, left_angle, wait=False)
         motor_right.run_target(100, right_angle, wait=False)
-        wait(100)
     ev3.screen.clear()
     ev3.screen.print("Replay finished")
 """
