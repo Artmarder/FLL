@@ -16,6 +16,8 @@ class Odometry:
     This class implements odometry for an EV3 robot in FLL competitions.
     """
 
+    print("HGello world!")
+
     def _init_(self, drivebase: DriveBase):
         """
         Initializes the odometry object.
