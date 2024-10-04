@@ -1,27 +1,15 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.ev3devices import Motor
-from pybricks.parameters import Port
-from pybricks.robotics import DriveBase
 from time import sleep
-from math import cos, sin, pi
+from math import cos, sin
+from mytools import thread
+from _thread import allocate_lock
+from math import radians
 
-WHEEL_DIAMETER = 56  # Wheel diameter in mm
-WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * pi  # Wheel circumference in mm
-WHEEL_BASE = 120  # Distance between wheels in mm
-
-# Initialize motors
-left_motor = Motor(Port.A)
-right_motor = Motor(Port.B)
-
-# Initialize DriveBase
-drivebase = DriveBase(left_motor, right_motor, WHEEL_BASE, WHEEL_DIAMETER)
-
-class Odometry():
+class Odometry:
     """
     This class implements odometry for an EV3 robot in FLL competitions.
     """
-
-    def __init__(self, drivebase: DriveBase):
+    def __init__(self, drivebase):
         """
         Initializes the odometry object.
 
@@ -33,13 +21,14 @@ class Odometry():
         self.y = 0.0  # Initial Y position (mm)
         self.theta = 0.0  # Initial angle (radians)
 
-        self.drivebase = drivebase
-
-        # Initialize last motor angles
-        self.last_left_angle = left_motor.angle()
-        self.last_right_angle = right_motor.angle()
         self.running = False  # Flag to control the odometry loop
 
+        self.drivebase = drivebase
+
+        self.lock = allocate_lock()
+
+
+    @thread
     def start_odometry(self):
         """
         Starts the odometry loop. This method should be called
@@ -48,39 +37,31 @@ class Odometry():
 
         self.running = True
         while self.running:
-            try:
-                left_angle = left_motor.angle()
-                right_angle = right_motor.angle()
+            left_angle = self.drivebase.leftMotor.angle()
+            right_angle = self.drivebase.rightMotor.angle()
 
-                # Compute the changes in wheel angles in mm
-                delta_left = (left_angle - self.last_left_angle) * WHEEL_CIRCUMFERENCE / 360
-                delta_right = (right_angle - self.last_right_angle) * WHEEL_CIRCUMFERENCE / 360
+            # Compute the changes in wheel angles in mm
+            delta_left = (left_angle - self.last_left_angle) * self.WHEEL_CIRCUMFERENCE / 360
+            delta_right = (right_angle - self.last_right_angle) * self.WHEEL_CIRCUMFERENCE / 360
 
-                # Update motor angles
-                self.last_left_angle = left_angle
-                self.last_right_angle = right_angle
+            # Update motor angles
+            self.last_left_angle = left_angle
+            self.last_right_angle = right_angle
 
-                # Compute the average change in angle
-                delta_theta = (delta_right - delta_left) / WHEEL_BASE
-                # Compute the distance traveled
-                distance = (delta_left + delta_right) / 2
+            # Compute the average change in angle
+            theta = self.drivebase.gyro.angle()
+            # Compute the distance traveled
+            distance = (delta_left + delta_right) / 2
 
-                # Update position considering robot orientation
-                dx = distance * cos(self.theta + delta_theta / 2)
-                dy = distance * sin(self.theta + delta_theta / 2)
+            # Update position considering robot orientation
+            theta_radians = radians(theta)
+            dx = distance * cos(theta_radians)
+            dy = distance * sin(theta_radians)
 
+            with self.lock:
                 self.x += dx
                 self.y += dy
-                self.theta += delta_theta
-
-                sleep(0.01)  # Short delay for smoother updates
-
-            except Exception as e:
-                self.stop_odometry()
-
-                print(x)
-                print(y)
-                print(theta)
+                self.theta = theta
 
     def stop_odometry(self):
         """
@@ -99,22 +80,23 @@ class Odometry():
             theta: New angle (radians).
         """
 
-        self.x = x
-        self.y = y
-        self.theta = theta
+        with self.lock:
+            self.x = x
+            self.y = y
+            self.theta = theta
 
-        self.last_left_angle = left_motor.angle()
-        self.last_right_angle = left_motor.angle()
+    def getPoseX(self):
+        with self.lock:
+            return self.x
+        
+    def getPoseY(self):
+        with self.lock:
+            return self.y
+        
+    def getPoseTheta(self):
+        with self.lock:
+            return self.theta
+        
+    
 
-    def getX(self):
-        self.x = x
-        return x
-
-    def getY(self):
-        self.y = y
-        return y
-
-    def getXTh(self):
-        self.theta = theta
-        return x
 
