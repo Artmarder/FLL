@@ -1,0 +1,40 @@
+#!/usr/bin/env pybricks-micropython
+from pybricks.ev3devices import Motor, GyroSensor
+from pybricks.parameters import Port
+from math import pi
+
+class Drivebase:
+
+    def __init__(self,):  # Исправил _init_ на __init__
+        self.leftMotor = Motor(Port.A)
+        self.rightMotor = Motor(Port.D)
+        self.gyro = GyroSensor(Port.S3)
+
+        self.WHEEL_DIAMETER = 8.16
+        self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * pi
+        self.WHEEL_BASE = 12.0
+
+    def run_tank(self, velLeft, velRight):
+        self.rightMotor.run(velRight)
+        self.leftMotor.run(velLeft)
+
+    def getDistance(self,):
+        return (self.rightMotor.angle() + self.leftMotor.angle()) / 2 / 360 * self.WHEEL_CIRCUMFERENCE
+
+    def resetDistance(self,):
+        self.leftMotor.reset_angle(0)
+        self.rightMotor.reset_angle(0)
+
+    def resetMotors(self, leftAngle, rightAngle):
+        self.leftMotor.reset_angle(leftAngle)
+        self.rightMotor.reset_angle(rightAngle)
+
+    def getGyro(self):
+        return self.gyro.angle()
+
+    def resetGyro(self, angle):
+        self.gyro.reset_angle(angle)
+    return speed
+
+
+robot = Robot()
