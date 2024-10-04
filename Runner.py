@@ -1,15 +1,21 @@
-from MyDevice import Gyro, Motor
-from myTools import Thread,Timer
-from ODometry import Odometry
-from correction import PIDController
+#!/usr/bin/env pybricks-micropython
+from MrRobot import MrRobot
+from drivebase import Drivebase
+from odometry import Odometry
 
-class Runner:
+drivebase = Drivebase()
+odometry = Odometry(drivebase)
 
-    def __init__(self):
-        self.odometry = Odometry
-        self.pid = PIDController
-        self.LeftMootr = Motor(self.motorA)
-        self.RighrMootr = Motor(self.motorB)
-        
+mrRobot = MrRobot(drivebase, odometry)
 
-        
+class RUNS:
+    def __init__(self, mrRobot):
+        self.mrRobot = mrRobot
+
+    def run1(self,):
+        self.mrRobot.drivebase.resetGyro(0)
+        self.mrRobot.drivebase.resetDistance()
+        mrRobot.PIDDrive(900,90,0)
+       
+runs = RUNS(mrRobot)
+runs.run1()
