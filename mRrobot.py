@@ -104,7 +104,7 @@ class MrRobot:
         self.drivebase.run_tank(0, 0)
 
     def forwardMotor1(self,Speed,Degrees):  
-        pid = PIDController(1, 0, 0)
+        pid = PIDController(1, 0.001, 2)
 
         Current_Speed_Motor = self.drivebase.motorspeed1()
         error = Speed - Current_Speed_Motor
