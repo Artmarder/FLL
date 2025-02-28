@@ -27,5 +27,5 @@ def replay_movements():
     ev3.right_motor.clear()
     ev3.screen.print("Replay finished")
 """
-FLL BLUE PHONIEX CODE !
+FLL velocity CODE !
 """
